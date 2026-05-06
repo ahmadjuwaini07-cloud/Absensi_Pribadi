@@ -2,574 +2,404 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Absensi Pribadi</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Absensi</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
+/* ── TEMA ── */
+:root {
+  --bg:        #F5F5F7;
+  --surface:   #FFFFFF;
+  --border:    #E5E5EA;
+  --text:      #1C1C1E;
+  --text-2:    #6C6C70;
+  --text-3:    #AEAEB2;
+  --green:     #30D158;
+  --green-bg:  #E8FAF0;
+  --red:       #FF453A;
+  --red-bg:    #FFEDEC;
+  --yellow:    #FF9F0A;
+  --yellow-bg: #FFF4E0;
+  --blue:      #0A84FF;
+  --blue-bg:   #E5F2FF;
+  --radius:    16px;
+  --radius-sm: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0e0f13;
-    --surface: #16181f;
-    --surface2: #1e2029;
-    --border: #2a2d3a;
-    --accent: #5dffb0;
-    --accent2: #ff6b6b;
-    --accent3: #ffd166;
-    --text: #e8eaf0;
-    --text-muted: #6b7080;
-    --radius: 16px;
+    --bg:        #000000;
+    --surface:   #1C1C1E;
+    --border:    #2C2C2E;
+    --text:      #FFFFFF;
+    --text-2:    #AEAEB2;
+    --text-3:    #48484A;
+    --green:     #30D158;
+    --green-bg:  #0D2B18;
+    --red:       #FF453A;
+    --red-bg:    #2D1210;
+    --yellow:    #FF9F0A;
+    --yellow-bg: #2B1F00;
+    --blue:      #0A84FF;
+    --blue-bg:   #001F3D;
   }
+}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  min-height: 100vh;
+  font-size: 15px;
+}
 
-  /* Background grid */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(93,255,176,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(93,255,176,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
+.page { max-width: 430px; margin: 0 auto; padding: 0 16px 56px; }
 
-  .container {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 24px 16px 40px;
-    position: relative;
-    z-index: 1;
-  }
+/* ── HEADER ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 10px;
+  gap: 12px;
+}
 
-  /* Header */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 32px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-  }
+.header-left { min-width: 0; }
+.header-title { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+.header-date  { font-size: 13px; color: var(--text-2); margin-top: 1px; }
 
-  .header-left h1 {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    color: var(--accent);
-  }
+.notif-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.notif-pill svg { width: 13px; height: 13px; }
+.notif-pill.on  { border-color: var(--green); color: var(--green); background: var(--green-bg); }
 
-  .header-left p {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-  }
+/* ── CLOCK ── */
+.clock-block {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.clock-time { font-size: 40px; font-weight: 700; letter-spacing: -2px; line-height: 1; font-variant-numeric: tabular-nums; }
+.clock-right { text-align: right; }
+.clock-day   { font-size: 14px; font-weight: 600; color: var(--text); }
+.clock-date  { font-size: 12px; color: var(--text-2); margin-top: 2px; }
 
-  .notif-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-family: 'Syne', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
 
-  .notif-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .notif-btn.active { background: rgba(93,255,176,0.1); border-color: var(--accent); color: var(--accent); }
+.card-label {
+  padding: 14px 16px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
 
-  /* Status Card */
-  .status-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-    position: relative;
-    overflow: hidden;
-  }
+/* ── STATUS ── */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
+.row + .row { border-top: 1px solid var(--border); }
+.row-key { font-size: 15px; font-weight: 500; }
+.row-val { font-size: 15px; font-weight: 600; color: var(--text-2); font-variant-numeric: tabular-nums; }
 
-  .status-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), transparent);
-  }
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+}
+.dot { width:6px; height:6px; border-radius:50%; background:currentColor; }
+.dot.pulse { animation: blink 1.6s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
 
-  .status-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
+.bg { background: var(--green-bg);  color: var(--green); }
+.br { background: var(--red-bg);    color: var(--red); }
+.by { background: var(--yellow-bg); color: var(--yellow); }
+.bn { background: var(--border);    color: var(--text-3); }
 
-  .status-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
+/* ── JADWAL ── */
+.info-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 16px; font-size: 14px;
+}
+.info-row + .info-row { border-top: 1px solid var(--border); }
+.info-lbl { color: var(--text-2); }
+.info-val { font-weight: 700; }
 
-  .status-row:last-child { margin-bottom: 0; }
+/* ── GRID AKSI ── */
+.act-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
 
-  .status-key {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 600;
-  }
+.act {
+  background: var(--surface);
+  border: none;
+  padding: 18px 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  transition: background 0.12s;
+  font-family: inherit;
+}
+.act:active { background: var(--bg); }
+.act.wide {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  padding: 15px 18px;
+  gap: 12px;
+}
 
-  .status-val {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    font-weight: 500;
-  }
+.act-ico {
+  width: 40px; height: 40px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.act.wide .act-ico { width: 34px; height: 34px; font-size: 17px; }
 
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    font-family: 'DM Mono', monospace;
-  }
+.act-txt { font-size: 12px; font-weight: 700; color: var(--text); text-align: center; line-height: 1.3; }
+.act.wide .act-txt { font-size: 14px; text-align: left; }
 
-  .badge-green { background: rgba(93,255,176,0.12); color: var(--accent); border: 1px solid rgba(93,255,176,0.2); }
-  .badge-red { background: rgba(255,107,107,0.12); color: var(--accent2); border: 1px solid rgba(255,107,107,0.2); }
-  .badge-yellow { background: rgba(255,209,102,0.12); color: var(--accent3); border: 1px solid rgba(255,209,102,0.2); }
-  .badge-gray { background: rgba(107,112,128,0.12); color: var(--text-muted); border: 1px solid rgba(107,112,128,0.2); }
+.ic-b { background: var(--blue-bg); }
+.ic-g { background: var(--green-bg); }
+.ic-y { background: var(--yellow-bg); }
+.ic-r { background: var(--red-bg); }
 
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-  .dot.pulse { animation: pulse 1.5s infinite; }
+/* ── RIWAYAT ── */
+.riwayat-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 0;
+}
+.riwayat-acts { display: flex; gap: 14px; }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
+.link-btn {
+  font-family: inherit;
+  font-size: 12px; font-weight: 700;
+  border: none; background: none; cursor: pointer;
+  padding: 4px 0;
+}
+.lb-blue { color: var(--blue); }
+.lb-red  { color: var(--red); opacity: .65; }
+.lb-red:hover { opacity: 1; }
 
-  /* Jadwal info */
-  .schedule-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
+.hist-list { padding: 6px 0 4px; }
 
-  .schedule-icon {
-    width: 40px;
-    height: 40px;
-    background: rgba(93,255,176,0.08);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
+.hist-row {
+  display: flex; align-items: center;
+  padding: 11px 16px; gap: 12px;
+}
+.hist-row + .hist-row { border-top: 1px solid var(--border); }
 
-  .schedule-info p {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 2px;
-  }
+.hist-ico {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
 
-  .schedule-info strong {
-    font-size: 14px;
-    font-weight: 700;
-  }
+.hist-body { flex: 1; min-width: 0; }
+.hist-date   { font-size: 12px; color: var(--text-3); margin-bottom: 2px; }
+.hist-detail { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  /* Action buttons */
-  .action-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-  }
+.empty {
+  text-align: center; padding: 32px 16px;
+  color: var(--text-3); font-size: 14px;
+}
+.empty span { font-size: 34px; display: block; margin-bottom: 8px; }
 
-  .section-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
+/* ── SHEET (bottom popup) ── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .22s;
+}
+.overlay.show { opacity: 1; pointer-events: all; }
 
-  .btn-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
+.sheet {
+  background: var(--surface);
+  width: 100%; max-width: 430px;
+  border-radius: 24px 24px 0 0;
+  padding: 0 20px 40px;
+  transform: translateY(100%);
+  transition: transform .28s cubic-bezier(.32,.72,0,1);
+}
+.overlay.show .sheet { transform: translateY(0); }
 
-  .btn {
-    padding: 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
+.sheet-handle {
+  width: 36px; height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 10px auto 22px;
+}
 
-  .btn span.emoji { font-size: 20px; }
-  .btn:hover { transform: translateY(-2px); }
-  .btn-yes { border-color: rgba(93,255,176,0.3); }
-  .btn-yes:hover { background: rgba(93,255,176,0.12); border-color: var(--accent); color: var(--accent); }
-  .btn-no { border-color: rgba(255,107,107,0.3); }
-  .btn-no:hover { background: rgba(255,107,107,0.12); border-color: var(--accent2); color: var(--accent2); }
-  .btn-off { border-color: rgba(255,209,102,0.3); }
-  .btn-off:hover { background: rgba(255,209,102,0.12); border-color: var(--accent3); color: var(--accent3); }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.sheet-emoji { font-size: 42px; display: block; text-align: center; margin-bottom: 10px; }
+.sheet-title { font-size: 19px; font-weight: 700; text-align: center; margin-bottom: 5px; }
+.sheet-sub   { font-size: 13px; color: var(--text-2); text-align: center; margin-bottom: 22px; line-height: 1.5; }
 
-  /* History */
-  .history-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-  }
+.s-btn {
+  width: 100%; padding: 15px;
+  border-radius: var(--radius-sm);
+  border: none; font-family: inherit;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: opacity .12s;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.s-btn:active { opacity: .75; }
+.s-btn:last-child { margin-bottom: 0; }
+.sb-g { background: var(--green);  color: #fff; }
+.sb-r { background: var(--red);    color: #fff; }
+.sb-y { background: var(--yellow); color: #fff; }
+.sb-n { background: var(--border); color: var(--text-2); }
 
-  .history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(72px);
+  background: var(--text); color: var(--bg);
+  padding: 11px 22px; border-radius: 24px;
+  font-size: 13px; font-weight: 600;
+  z-index: 200; white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,.18);
+  transition: transform .26s cubic-bezier(.32,.72,0,1);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
 
-  .clear-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--accent2);
-    background: none;
-    border: none;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.2s;
-  }
-
-  .clear-btn:hover { opacity: 1; }
-
-  .export-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--accent);
-    background: none;
-    border: none;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-  }
-
-  .export-btn:hover { opacity: 1; }
-
-  .history-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .history-list { display: flex; flex-direction: column; gap: 8px; }
-
-  .history-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 14px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-    align-items: center;
-    animation: slideIn 0.3s ease;
-  }
-
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(-8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .history-date {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-bottom: 4px;
-  }
-
-  .history-detail {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 24px;
-    color: var(--text-muted);
-    font-size: 13px;
-  }
-
-  .empty-state .emoji { font-size: 32px; display: block; margin-bottom: 8px; }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 13px;
-    font-weight: 600;
-    z-index: 1000;
-    transition: transform 0.3s ease;
-    white-space: nowrap;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  }
-
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.success { border-color: rgba(93,255,176,0.3); color: var(--accent); }
-  .toast.info { border-color: rgba(255,209,102,0.3); color: var(--accent3); }
-
-  /* Popup overlay */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
-
-  .overlay.show { opacity: 1; pointer-events: all; }
-
-  .popup {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 28px 24px;
-    max-width: 320px;
-    width: 100%;
-    text-align: center;
-    transform: scale(0.9);
-    transition: transform 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .overlay.show .popup { transform: scale(1); }
-
-  .popup::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--accent3));
-  }
-
-  .popup-emoji { font-size: 48px; margin-bottom: 16px; }
-  .popup-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
-  .popup-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
-
-  .popup-buttons { display: flex; flex-direction: column; gap: 10px; }
-
-  .popup-btn {
-    padding: 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .popup-btn:hover { transform: translateY(-2px); }
-  .popup-btn-yes { border-color: rgba(93,255,176,0.4); }
-  .popup-btn-yes:hover { background: rgba(93,255,176,0.15); border-color: var(--accent); color: var(--accent); }
-  .popup-btn-no { border-color: rgba(255,107,107,0.4); }
-  .popup-btn-no:hover { background: rgba(255,107,107,0.15); border-color: var(--accent2); color: var(--accent2); }
-  .popup-btn-off { border-color: rgba(255,209,102,0.4); }
-  .popup-btn-off:hover { background: rgba(255,209,102,0.15); border-color: var(--accent3); color: var(--accent3); }
-
-  /* Divider */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 16px 0;
-  }
-
-  .time-display {
-    font-family: 'DM Mono', monospace;
-    font-size: 28px;
-    font-weight: 500;
-    color: var(--accent);
-    text-align: center;
-    letter-spacing: 2px;
-    margin-bottom: 4px;
-  }
-
-  .date-display {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
-    text-align: center;
-    margin-bottom: 16px;
-  }
-
-  .info-box {
-    background: rgba(93,255,176,0.05);
-    border: 1px solid rgba(93,255,176,0.1);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.5;
-    margin-bottom: 16px;
-  }
-
-  .info-box strong { color: var(--accent); }
 </style>
 </head>
 <body>
-
-<div class="container">
+<div class="page">
 
   <!-- Header -->
   <div class="header">
     <div class="header-left">
-      <h1>📋 Absensi</h1>
-      <p id="currentDateHeader"></p>
+      <div class="header-title">Absensi</div>
+      <div class="header-date" id="hDate"></div>
     </div>
-    <button class="notif-btn" id="notifBtn" onclick="requestNotifPermission()">
-      🔔 Aktifkan Notif
+    <button class="notif-pill" id="notifBtn" onclick="reqNotif()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span id="notifLbl">Aktifkan</span>
     </button>
   </div>
 
-  <!-- Clock -->
-  <div class="time-display" id="clockDisplay">00:00:00</div>
-  <div class="date-display" id="dateDisplay"></div>
-
-  <!-- Info Jadwal -->
-  <div class="info-box">
-    Notif <strong>Pulang</strong>: Selasa jam <strong>15:30</strong> · Hari lain jam <strong>17:30</strong><br>
-    Notif <strong>Datang</strong>: Setiap pagi jam <strong>07:00</strong>
-  </div>
-
-  <!-- Status Hari Ini -->
-  <div class="status-card">
-    <div class="status-label">STATUS HARI INI</div>
-    <div class="status-row">
-      <span class="status-key">Jam Datang</span>
-      <span class="status-val" id="statusDatang">—</span>
-    </div>
-    <div class="status-row">
-      <span class="status-key">Jam Pulang</span>
-      <span class="status-val" id="statusPulang">—</span>
-    </div>
-    <div class="status-row">
-      <span class="status-key">Status</span>
-      <span id="statusBadge"><span class="badge badge-gray"><span class="dot"></span>Belum ada</span></span>
+  <!-- Jam -->
+  <div class="clock-block">
+    <div class="clock-time" id="cTime">00:00</div>
+    <div class="clock-right">
+      <div class="clock-day" id="cDay"></div>
+      <div class="clock-date" id="cDate"></div>
     </div>
   </div>
 
-  <!-- Tombol Manual -->
-  <div class="action-section">
-    <div class="section-title">CATAT MANUAL</div>
+  <!-- Status -->
+  <div class="card">
+    <div class="card-label">Status Hari Ini</div>
+    <div class="row"><span class="row-key">Jam Datang</span><span class="row-val" id="sDatang">—</span></div>
+    <div class="row"><span class="row-key">Jam Pulang</span><span class="row-val" id="sPulang">—</span></div>
+    <div class="row"><span class="row-key">Status</span><span id="sBadge"><span class="badge bn"><span class="dot"></span>Belum ada</span></span></div>
+  </div>
 
-    <div class="btn-group">
-      <button class="btn btn-yes" onclick="showPopup('datang')">
-        <span class="emoji">🏢</span>
-        Sudah Datang
-      </button>
-      <button class="btn btn-yes" onclick="showPopup('pulang')">
-        <span class="emoji">🏠</span>
-        Mau Pulang
-      </button>
-    </div>
+  <!-- Jadwal -->
+  <div class="card">
+    <div class="card-label">Jadwal Notifikasi</div>
+    <div class="info-row"><span class="info-lbl">Pulang — Selasa</span><span class="info-val">15.30</span></div>
+    <div class="info-row"><span class="info-lbl">Pulang — Hari lain</span><span class="info-val">17.30</span></div>
+    <div class="info-row"><span class="info-lbl">Datang — Setiap pagi</span><span class="info-val">07.00</span></div>
+  </div>
 
-    <div style="margin-top:10px;">
-      <button class="btn btn-off" style="width:100%;flex-direction:row;justify-content:center;" onclick="tandaiLibur()">
-        <span class="emoji">🌴</span>
-        Tandai Hari Ini Libur
-      </button>
-    </div>
-
-    <div style="margin-top:10px;">
-      <button class="btn btn-no" style="width:100%;flex-direction:row;justify-content:center;" onclick="tandaiBermalam()">
-        <span class="emoji">🌙</span>
-        Bermalam (Tidak Pulang)
-      </button>
-    </div>
+  <!-- Aksi -->
+  <div class="act-grid">
+    <button class="act" onclick="showSheet('datang')">
+      <div class="act-ico ic-b">🏢</div>
+      <div class="act-txt">Sudah Datang</div>
+    </button>
+    <button class="act" onclick="showSheet('pulang')">
+      <div class="act-ico ic-g">🏠</div>
+      <div class="act-txt">Mau Pulang</div>
+    </button>
+    <button class="act wide" onclick="tandaiLibur()">
+      <div class="act-ico ic-y">🌴</div>
+      <div class="act-txt">Tandai Hari Ini Libur</div>
+    </button>
+    <button class="act wide" onclick="tandaiBermalam()">
+      <div class="act-ico ic-r">🌙</div>
+      <div class="act-txt">Bermalam / Tidak Pulang</div>
+    </button>
   </div>
 
   <!-- Riwayat -->
-  <div class="history-section">
-    <div class="history-header">
-      <div class="section-title" style="margin:0">RIWAYAT ABSENSI</div>
-      <div class="history-actions">
-        <button class="export-btn" onclick="exportCSV()">⬇ Export CSV</button>
-        <button class="clear-btn" onclick="clearHistory()">Hapus Semua</button>
+  <div class="card">
+    <div class="riwayat-head">
+      <div class="card-label" style="padding:0">Riwayat</div>
+      <div class="riwayat-acts">
+        <button class="link-btn lb-blue" onclick="exportCSV()">↓ CSV</button>
+        <button class="link-btn lb-red"  onclick="clearHistory()">Hapus</button>
       </div>
     </div>
-    <div class="history-list" id="historyList">
-      <div class="empty-state"><span class="emoji">📭</span>Belum ada catatan</div>
+    <div class="hist-list" id="histList">
+      <div class="empty"><span>📭</span>Belum ada catatan</div>
     </div>
   </div>
 
 </div>
 
-<!-- Popup Overlay -->
-<div class="overlay" id="popupOverlay">
-  <div class="popup">
-    <div class="popup-emoji" id="popupEmoji">❓</div>
-    <div class="popup-title" id="popupTitle">Judul</div>
-    <div class="popup-subtitle" id="popupSubtitle">Subjudul</div>
-    <div class="popup-buttons" id="popupButtons"></div>
+<!-- Sheet -->
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <span class="sheet-emoji" id="sEmoji"></span>
+    <div class="sheet-title" id="sTitle"></div>
+    <div class="sheet-sub"   id="sSub"></div>
+    <div id="sBtns"></div>
   </div>
 </div>
 
@@ -577,546 +407,283 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// =====================
-// STATE & STORAGE
-// =====================
-
-const STORAGE_KEY = 'absensi_data';
-
-function getState() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-      records: [],          // array of daily records
-      lastPopupDate: null,  // tanggal terakhir popup muncul
-      bermalam: false,      // apakah sedang bermalam
-      skipNextArrival: false, // skip notif datang esok
-      waitingArrival: false,  // menunggu konfirmasi kedatangan
-    };
-  } catch(e) {
-    return { records: [], lastPopupDate: null, bermalam: false, skipNextArrival: false, waitingArrival: false };
-  }
-}
-
-function saveState(state) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
+// ── DATA ──
+const KEY = 'absensi_v2';
+function load()  { try { return JSON.parse(localStorage.getItem(KEY)) || base(); } catch{ return base(); } }
+function base()  { return { records:[], skipNextArrival:false, waitingArrival:false }; }
+function save(s) { localStorage.setItem(KEY, JSON.stringify(s)); }
 
 function todayStr() {
-  return new Date().toLocaleDateString('id-ID', { year:'numeric', month:'2-digit', day:'2-digit' });
+  return new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric'});
 }
-
-function nowTimeStr() {
-  return new Date().toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+function nowTime() {
+  return new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
 }
+const DAYS = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+function dayName() { return DAYS[new Date().getDay()]; }
 
-function getDayName() {
-  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-  return days[new Date().getDay()];
-}
-
-function getOrCreateTodayRecord(state) {
-  const today = todayStr();
-  let rec = state.records.find(r => r.date === today);
-  if (!rec) {
-    rec = { date: today, datang: null, pulang: null, status: 'kosong', bermalam: false };
-    state.records.unshift(rec);
-    // Keep max 60 records
-    if (state.records.length > 60) state.records = state.records.slice(0, 60);
+function getOrCreate(s) {
+  const d = todayStr();
+  let r = s.records.find(x => x.date === d);
+  if (!r) {
+    r = {date:d, datang:null, pulang:null, status:'kosong', bermalam:false};
+    s.records.unshift(r);
+    if (s.records.length > 60) s.records.length = 60;
   }
-  return rec;
+  return r;
 }
 
-// =====================
-// CLOCK
-// =====================
-
-function updateClock() {
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
-  const s = String(now.getSeconds()).padStart(2,'0');
-  document.getElementById('clockDisplay').textContent = `${h}:${m}:${s}`;
-
-  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
-  document.getElementById('dateDisplay').textContent = now.toLocaleDateString('id-ID', opts);
-  document.getElementById('currentDateHeader').textContent = now.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+// ── JAM ──
+function tick() {
+  const n = new Date();
+  const hh = String(n.getHours()).padStart(2,'0');
+  const mm = String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('cTime').textContent = `${hh}:${mm}`;
+  document.getElementById('cDay').textContent  = dayName();
+  document.getElementById('cDate').textContent = n.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('hDate').textContent = n.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
 }
+setInterval(tick, 1000); tick();
 
-setInterval(updateClock, 1000);
-updateClock();
+// ── NOTIF ──
+let notifOn = false, schedTmr = null, lastMin = -1;
 
-// =====================
-// NOTIFICATION
-// =====================
-
-let notifGranted = false;
-let schedulerInterval = null;
-
-function requestNotifPermission() {
-  if (!('Notification' in window)) {
-    showToast('Browser tidak support notifikasi', 'info');
-    return;
-  }
-  Notification.requestPermission().then(perm => {
-    notifGranted = perm === 'granted';
-    updateNotifBtn();
-    if (notifGranted) {
-      showToast('✅ Notifikasi aktif!', 'success');
-      startScheduler();
-    } else {
-      showToast('Izin notifikasi ditolak', 'info');
-    }
+function reqNotif() {
+  if (!('Notification' in window)) { toast('Browser tidak support notifikasi'); return; }
+  Notification.requestPermission().then(p => {
+    notifOn = p === 'granted';
+    updNotif();
+    if (notifOn) { toast('Notifikasi aktif ✓'); startSched(); }
+    else toast('Izin notifikasi ditolak');
   });
 }
+function updNotif() {
+  const b = document.getElementById('notifBtn');
+  document.getElementById('notifLbl').textContent = notifOn ? 'Aktif' : 'Aktifkan';
+  notifOn ? b.classList.add('on') : b.classList.remove('on');
+}
+function push(title, body, type) {
+  if (notifOn) {
+    const n = new Notification(title, {body});
+    n.onclick = () => { window.focus(); showSheet(type); n.close(); };
+  }
+  showSheet(type);
+}
+function pulangJam() { return new Date().getDay()===2 ? {h:15,m:30} : {h:17,m:30}; }
 
-function updateNotifBtn() {
-  const btn = document.getElementById('notifBtn');
-  if (notifGranted) {
-    btn.textContent = '🔔 Notif Aktif';
-    btn.classList.add('active');
+function startSched() {
+  if (schedTmr) clearInterval(schedTmr);
+  schedTmr = setInterval(checkSched, 10000);
+  checkSched();
+}
+
+function checkSched() {
+  const n = new Date(), h = n.getHours(), m = n.getMinutes(), cur = h*60+m;
+  if (cur === lastMin) return;
+  const s = load();
+  const today = todayStr();
+  const rec = s.records.find(r => r.date === today);
+
+  if (h===7 && m===0) {
+    lastMin = cur;
+    if (s.skipNextArrival) { s.skipNextArrival=false; save(s); return; }
+    if (rec?.datang || rec?.status==='libur') return;
+    s.waitingArrival=true; save(s);
+    push('Selamat Pagi! 🌅','Apakah kamu sudah sampai di tempat kerja?','datang');
+    return;
+  }
+
+  const pj = pulangJam();
+  if (h===pj.h && m===pj.m) {
+    lastMin = cur;
+    if (rec?.pulang || rec?.bermalam || rec?.status==='libur') return;
+    push('Waktunya Pulang? 🏠','Apakah kamu pulang hari ini?','pulang');
+    return;
+  }
+
+  const pMin = pj.h*60+pj.m;
+  if (cur>pMin && (!rec||rec.status==='kosong') && !s.waitingArrival) {
+    const s2=load(), r2=getOrCreate(s2);
+    if (r2.status==='kosong') { r2.status='libur'; save(s2); render(); }
+  }
+}
+
+// ── SHEET ──
+function showSheet(type) {
+  document.getElementById('sBtns').innerHTML = '';
+  if (type==='pulang') {
+    document.getElementById('sEmoji').textContent = '🏠';
+    document.getElementById('sTitle').textContent = 'Apakah kamu pulang hari ini?';
+    document.getElementById('sSub').textContent   = `Sekarang ${nowTime()} · ${dayName()}`;
+    addSBtn('✓  Ya, saya pulang','sb-g', ()=>{ catatPulang(); closeSheet(); });
+    addSBtn('🌙  Tidak, saya bermalam','sb-r', ()=>{ catatBermalam(); closeSheet(); });
+    addSBtn('Batal','sb-n', closeSheet);
   } else {
-    btn.textContent = '🔔 Aktifkan Notif';
-    btn.classList.remove('active');
+    document.getElementById('sEmoji').textContent = '🌅';
+    document.getElementById('sTitle').textContent = 'Apakah kamu sudah sampai?';
+    document.getElementById('sSub').textContent   = `Sekarang ${nowTime()} · ${dayName()}`;
+    addSBtn('✓  Ya, sudah sampai','sb-g', ()=>{ catatDatang(); closeSheet(); });
+    addSBtn('🌴  Libur dulu','sb-y', ()=>{ tandaiLibur(); closeSheet(); });
+    addSBtn('Batal','sb-n', closeSheet);
   }
+  document.getElementById('overlay').classList.add('show');
 }
-
-function sendNotification(title, body, type) {
-  if (notifGranted) {
-    const n = new Notification(title, { body, icon: '' });
-    n.onclick = () => { window.focus(); showPopup(type); n.close(); };
-  }
-  // Juga tampilkan popup langsung
-  showPopup(type);
+function addSBtn(txt, cls, fn) {
+  const b = document.createElement('button');
+  b.className = `s-btn ${cls}`; b.textContent = txt; b.onclick = fn;
+  document.getElementById('sBtns').appendChild(b);
 }
+function closeSheet() { document.getElementById('overlay').classList.remove('show'); }
+document.getElementById('overlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeSheet(); });
 
-// =====================
-// SCHEDULER
-// =====================
-
-let lastCheckedMinute = -1;
-
-function startScheduler() {
-  if (schedulerInterval) clearInterval(schedulerInterval);
-  schedulerInterval = setInterval(checkSchedule, 10000); // cek tiap 10 detik
-  checkSchedule();
-}
-
-function getNotifPulangTime() {
-  // Selasa = hari ke-2 (0=Minggu)
-  return new Date().getDay() === 2 ? { h:15, m:30 } : { h:17, m:30 };
-}
-
-function checkSchedule() {
-  const now = new Date();
-  const h = now.getHours();
-  const m = now.getMinutes();
-  const currentMinute = h * 60 + m;
-  const state = getState();
-  const today = todayStr();
-  const todayRec = state.records.find(r => r.date === today);
-
-  // Guard: jangan trigger 2x dalam 1 menit
-  if (currentMinute === lastCheckedMinute) return;
-
-  // === NOTIF DATANG (07:00) ===
-  if (h === 7 && m === 0) {
-    lastCheckedMinute = currentMinute;
-    // Skip jika bermalam kemarin
-    if (state.skipNextArrival) {
-      state.skipNextArrival = false;
-      saveState(state);
-      return;
-    }
-    // Skip jika sudah ada catatan datang hari ini
-    if (todayRec && todayRec.datang) return;
-    // Skip jika hari ini sudah libur
-    if (todayRec && todayRec.status === 'libur') return;
-
-    state.waitingArrival = true;
-    saveState(state);
-    sendNotification('🌅 Selamat Pagi!', 'Apakah kamu sudah sampai di tempat kerja?', 'datang');
-    return;
-  }
-
-  // === NOTIF PULANG ===
-  const pulangTime = getNotifPulangTime();
-  if (h === pulangTime.h && m === pulangTime.m) {
-    lastCheckedMinute = currentMinute;
-
-    // Jika sudah catat pulang hari ini, skip
-    if (todayRec && (todayRec.pulang || todayRec.bermalam)) return;
-    // Jika libur, skip
-    if (todayRec && todayRec.status === 'libur') return;
-
-    sendNotification('🏠 Waktunya Pulang?', 'Apakah kamu pulang hari ini?', 'pulang');
-    return;
-  }
-
-  // === AUTO LIBUR: jika jam notif pulang lewat tanpa ada catatan datang ===
-  const pulangMinute = pulangTime.h * 60 + pulangTime.m;
-  if (currentMinute > pulangMinute && !state.waitingArrival) {
-    if (!todayRec || todayRec.status === 'kosong') {
-      // Tidak ada catatan apapun hari ini → libur
-      const s = getState();
-      const rec = getOrCreateTodayRecord(s);
-      if (rec.status === 'kosong') {
-        rec.status = 'libur';
-        saveState(s);
-        renderStatus();
-        renderHistory();
-      }
-    }
-  }
-}
-
-// =====================
-// POPUP
-// =====================
-
-function showPopup(type) {
-  const overlay = document.getElementById('popupOverlay');
-  const emoji = document.getElementById('popupEmoji');
-  const title = document.getElementById('popupTitle');
-  const subtitle = document.getElementById('popupSubtitle');
-  const buttons = document.getElementById('popupButtons');
-
-  buttons.innerHTML = '';
-
-  if (type === 'pulang') {
-    emoji.textContent = '🏠';
-    title.textContent = 'Apakah kamu pulang hari ini?';
-    subtitle.textContent = `Jam sekarang: ${nowTimeStr()} · ${getDayName()}, ${todayStr()}`;
-
-    const btnYa = makePopupBtn('✅ Ya, saya pulang', 'popup-btn-yes', () => {
-      catatPulang();
-      closePopup();
-    });
-    const btnTidak = makePopupBtn('🌙 Tidak, saya bermalam', 'popup-btn-no', () => {
-      catatBermalam();
-      closePopup();
-    });
-
-    buttons.appendChild(btnYa);
-    buttons.appendChild(btnTidak);
-
-  } else if (type === 'datang') {
-    emoji.textContent = '🌅';
-    title.textContent = 'Apakah kamu sudah sampai?';
-    subtitle.textContent = `Jam sekarang: ${nowTimeStr()} · ${getDayName()}, ${todayStr()}`;
-
-    const btnYa = makePopupBtn('✅ Ya, sudah sampai', 'popup-btn-yes', () => {
-      catatDatang();
-      closePopup();
-    });
-    const btnLibur = makePopupBtn('🌴 Libur dulu', 'popup-btn-off', () => {
-      tandaiLibur();
-      closePopup();
-    });
-
-    buttons.appendChild(btnYa);
-    buttons.appendChild(btnLibur);
-  }
-
-  overlay.classList.add('show');
-}
-
-function makePopupBtn(label, cls, fn) {
-  const btn = document.createElement('button');
-  btn.className = `popup-btn ${cls}`;
-  btn.innerHTML = label;
-  btn.onclick = fn;
-  return btn;
-}
-
-function closePopup() {
-  document.getElementById('popupOverlay').classList.remove('show');
-}
-
-// Tutup popup jika klik overlay
-document.getElementById('popupOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closePopup();
-});
-
-// =====================
-// CATAT ABSENSI
-// =====================
-
+// ── AKSI ──
 function catatDatang() {
-  const state = getState();
-  const rec = getOrCreateTodayRecord(state);
-  rec.datang = nowTimeStr();
-  if (rec.status === 'kosong' || !rec.status) rec.status = 'hadir';
-  state.waitingArrival = false;
-  saveState(state);
-  renderStatus();
-  renderHistory();
-  showToast(`✅ Jam datang dicatat: ${rec.datang}`, 'success');
+  const s=load(), r=getOrCreate(s);
+  r.datang=nowTime(); if(!r.status||r.status==='kosong') r.status='hadir';
+  s.waitingArrival=false; save(s); render();
+  toast(`Jam datang: ${r.datang} ✓`);
 }
-
 function catatPulang() {
-  const state = getState();
-  const rec = getOrCreateTodayRecord(state);
-  rec.pulang = nowTimeStr();
-  if (!rec.datang) rec.datang = '—';
-  rec.status = 'hadir';
-  rec.bermalam = false;
-  state.skipNextArrival = false;
-  // esok akan ada notif datang, waitingArrival akan di-set oleh scheduler
-  saveState(state);
-  renderStatus();
-  renderHistory();
-  showToast(`✅ Jam pulang dicatat: ${rec.pulang}`, 'success');
+  const s=load(), r=getOrCreate(s);
+  r.pulang=nowTime(); if(!r.datang) r.datang='—';
+  r.status='hadir'; r.bermalam=false; s.skipNextArrival=false;
+  save(s); render(); toast(`Jam pulang: ${r.pulang} ✓`);
 }
-
 function catatBermalam() {
-  const state = getState();
-  const rec = getOrCreateTodayRecord(state);
-  rec.bermalam = true;
-  rec.pulang = null;
-  if (!rec.datang) rec.datang = '—';
-  rec.status = 'bermalam';
-  state.skipNextArrival = true; // skip notif datang esok
-  saveState(state);
-  renderStatus();
-  renderHistory();
-  showToast('🌙 Dicatat bermalam. Notif datang esok diskip.', 'info');
+  const s=load(), r=getOrCreate(s);
+  r.bermalam=true; r.pulang=null; if(!r.datang) r.datang='—';
+  r.status='bermalam'; s.skipNextArrival=true;
+  save(s); render(); toast('Bermalam dicatat. Notif esok diskip 🌙');
 }
-
 function tandaiLibur() {
-  const state = getState();
-  const rec = getOrCreateTodayRecord(state);
-  rec.status = 'libur';
-  rec.datang = null;
-  rec.pulang = null;
-  rec.bermalam = false;
-  state.waitingArrival = false;
-  saveState(state);
-  renderStatus();
-  renderHistory();
-  showToast('🌴 Hari ini ditandai libur', 'info');
+  const s=load(), r=getOrCreate(s);
+  r.status='libur'; r.datang=null; r.pulang=null; r.bermalam=false;
+  s.waitingArrival=false; save(s); render(); toast('Hari ini libur 🌴');
 }
-
 function tandaiBermalam() {
-  const state = getState();
-  const rec = getOrCreateTodayRecord(state);
-  rec.bermalam = true;
-  rec.status = 'bermalam';
-  state.skipNextArrival = true;
-  saveState(state);
-  renderStatus();
-  renderHistory();
-  showToast('🌙 Bermalam dicatat. Notif datang esok diskip.', 'info');
+  const s=load(), r=getOrCreate(s);
+  r.bermalam=true; r.status='bermalam'; s.skipNextArrival=true;
+  save(s); render(); toast('Bermalam dicatat. Notif esok diskip 🌙');
 }
 
-// =====================
-// RENDER
-// =====================
+// ── RENDER ──
+function render() {
+  const s = load();
+  const rec = s.records.find(r => r.date===todayStr());
 
-function renderStatus() {
-  const state = getState();
-  const today = todayStr();
-  const rec = state.records.find(r => r.date === today);
+  document.getElementById('sDatang').textContent = rec?.datang||'—';
+  document.getElementById('sPulang').textContent = rec?.pulang||(rec?.bermalam?'Bermalam 🌙':'—');
 
-  document.getElementById('statusDatang').textContent = rec?.datang || '—';
-  document.getElementById('statusPulang').textContent = rec?.pulang || (rec?.bermalam ? 'Bermalam 🌙' : '—');
-
-  const badgeEl = document.getElementById('statusBadge');
-  const status = rec?.status || 'kosong';
-
-  const map = {
-    hadir: `<span class="badge badge-green"><span class="dot pulse"></span>Hadir</span>`,
-    libur: `<span class="badge badge-yellow"><span class="dot"></span>Libur</span>`,
-    bermalam: `<span class="badge badge-red"><span class="dot"></span>Bermalam</span>`,
-    kosong: `<span class="badge badge-gray"><span class="dot"></span>Belum ada</span>`,
+  const st = rec?.status||'kosong';
+  const bm = {
+    hadir:    `<span class="badge bg"><span class="dot pulse"></span>Hadir</span>`,
+    libur:    `<span class="badge by"><span class="dot"></span>Libur</span>`,
+    bermalam: `<span class="badge br"><span class="dot"></span>Bermalam</span>`,
+    kosong:   `<span class="badge bn"><span class="dot"></span>Belum ada</span>`,
   };
+  document.getElementById('sBadge').innerHTML = bm[st]||bm.kosong;
 
-  badgeEl.innerHTML = map[status] || map['kosong'];
-}
-
-function renderHistory() {
-  const state = getState();
-  const list = document.getElementById('historyList');
-
-  if (!state.records || state.records.length === 0) {
-    list.innerHTML = `<div class="empty-state"><span class="emoji">📭</span>Belum ada catatan</div>`;
+  const list = document.getElementById('histList');
+  if (!s.records.length) {
+    list.innerHTML = `<div class="empty"><span>📭</span>Belum ada catatan</div>`;
     return;
   }
 
-  list.innerHTML = state.records.map(rec => {
-    const statusMap = {
-      hadir: { cls: 'badge-green', label: 'Hadir' },
-      libur: { cls: 'badge-yellow', label: 'Libur' },
-      bermalam: { cls: 'badge-red', label: 'Bermalam' },
-      kosong: { cls: 'badge-gray', label: '—' },
-    };
-    const s = statusMap[rec.status] || statusMap['kosong'];
+  const icons  = { hadir:'✅', libur:'🌴', bermalam:'🌙', kosong:'❓' };
+  const icoCls = { hadir:'ic-g', libur:'ic-y', bermalam:'ic-r', kosong:'' };
+  const slabel = { hadir:'Hadir', libur:'Libur', bermalam:'Bermalam', kosong:'—' };
+  const scls   = { hadir:'bg', libur:'by', bermalam:'br', kosong:'bn' };
 
-    let detail = '';
-    if (rec.status === 'hadir') {
-      detail = `Datang: ${rec.datang || '—'} · Pulang: ${rec.pulang || '—'}`;
-    } else if (rec.status === 'bermalam') {
-      detail = `Datang: ${rec.datang || '—'} · Bermalam 🌙`;
-    } else if (rec.status === 'libur') {
-      detail = 'Hari libur 🌴';
-    } else {
-      detail = 'Tidak ada catatan';
-    }
+  list.innerHTML = s.records.map(r => {
+    let det = '';
+    if (r.status==='hadir')    det = `Datang ${r.datang||'—'} · Pulang ${r.pulang||'—'}`;
+    else if(r.status==='bermalam') det = `Datang ${r.datang||'—'} · Bermalam`;
+    else if(r.status==='libur')    det = 'Hari libur';
+    else det = 'Tidak ada catatan';
 
-    return `
-      <div class="history-item">
-        <div>
-          <div class="history-date">${rec.date}</div>
-          <div class="history-detail">${detail}</div>
-        </div>
-        <span class="badge ${s.cls}">${s.label}</span>
+    return `<div class="hist-row">
+      <div class="hist-ico ${icoCls[r.status]||''}">${icons[r.status]||'❓'}</div>
+      <div class="hist-body">
+        <div class="hist-date">${r.date}</div>
+        <div class="hist-detail">${det}</div>
       </div>
-    `;
+      <span class="badge ${scls[r.status]||'bn'}">${slabel[r.status]||'—'}</span>
+    </div>`;
   }).join('');
 }
 
 function clearHistory() {
-  if (!confirm('Hapus semua riwayat absensi?')) return;
-  const state = getState();
-  state.records = [];
-  saveState(state);
-  renderStatus();
-  renderHistory();
-  showToast('🗑️ Riwayat dihapus', 'info');
+  if (!confirm('Hapus semua riwayat?')) return;
+  const s=load(); s.records=[]; save(s); render(); toast('Riwayat dihapus');
 }
 
-// =====================
-// TOAST
-// =====================
-
-let toastTimeout;
-function showToast(msg, type='success') {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.className = `toast ${type} show`;
-  clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-// =====================
-// EXPORT CSV
-// =====================
-
+// ── EXPORT CSV ──
 function exportCSV() {
-  const state = getState();
+  const s=load();
+  if (!s.records.length) { toast('Belum ada data'); return; }
 
-  if (!state.records || state.records.length === 0) {
-    showToast('Belum ada data untuk diexport', 'info');
-    return;
-  }
-
-  // Hitung durasi kerja
-  function hitungDurasi(datang, pulang) {
-    if (!datang || !pulang || datang === '—' || pulang === '—') return '—';
+  function dur(d,p) {
+    if(!d||!p||d==='—'||p==='—') return '—';
     try {
-      const [dh, dm] = datang.split(':').map(Number);
-      const [ph, pm] = pulang.split(':').map(Number);
-      const totalMenit = (ph * 60 + pm) - (dh * 60 + dm);
-      if (totalMenit <= 0) return '—';
-      const jam = Math.floor(totalMenit / 60);
-      const menit = totalMenit % 60;
-      return `${jam}j ${menit}m`;
-    } catch(e) { return '—'; }
+      const [dh,dm]=d.split(':').map(Number),[ph,pm]=p.split(':').map(Number);
+      const t=(ph*60+pm)-(dh*60+dm);
+      return t<=0?'—':`${Math.floor(t/60)}j ${t%60}m`;
+    } catch{return '—';}
+  }
+  function getHari(ds) {
+    try { const p=ds.split('/'); return DAYS[new Date(`${p[2]}-${p[1]}-${p[0]}`).getDay()]||'—'; }
+    catch{return '—';}
   }
 
-  const header = ['Tanggal', 'Hari', 'Jam Datang', 'Jam Pulang', 'Durasi', 'Status', 'Keterangan'];
+  const rows = s.records.map(r => [
+    r.date, getHari(r.date),
+    r.datang||'—',
+    r.pulang||(r.bermalam?'Bermalam':'—'),
+    dur(r.datang,r.pulang),
+    {hadir:'Hadir',libur:'Libur',bermalam:'Bermalam',kosong:'—'}[r.status]||'—',
+    {hadir:'Hadir Normal',libur:'Hari Libur',bermalam:'Tidak Pulang/Bermalam',kosong:'—'}[r.status]||'—',
+  ].map(v=>`"${v}"`).join(','));
 
-  const hariMap = {
-    '0': 'Minggu', '1': 'Senin', '2': 'Selasa',
-    '3': 'Rabu', '4': 'Kamis', '5': 'Jumat', '6': 'Sabtu'
-  };
+  const th=s.records.filter(r=>r.status==='hadir').length;
+  const tl=s.records.filter(r=>r.status==='libur').length;
+  const tb=s.records.filter(r=>r.status==='bermalam').length;
 
-  function getHari(dateStr) {
-    try {
-      // dateStr format: DD/MM/YYYY
-      const parts = dateStr.split('/');
-      const d = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-      return hariMap[d.getDay()] || '—';
-    } catch(e) { return '—'; }
-  }
-
-  function getKeterangan(rec) {
-    if (rec.status === 'libur') return 'Hari Libur';
-    if (rec.status === 'bermalam') return 'Tidak Pulang / Bermalam';
-    if (rec.status === 'hadir') return 'Hadir Normal';
-    return '—';
-  }
-
-  const rows = state.records.map(rec => {
-    const durasi = hitungDurasi(rec.datang, rec.pulang);
-    const statusLabel = {
-      hadir: 'Hadir',
-      libur: 'Libur',
-      bermalam: 'Bermalam',
-      kosong: '—'
-    }[rec.status] || '—';
-
-    return [
-      rec.date,
-      getHari(rec.date),
-      rec.datang || '—',
-      rec.pulang || (rec.bermalam ? 'Bermalam' : '—'),
-      durasi,
-      statusLabel,
-      getKeterangan(rec)
-    ].map(v => `"${v}"`).join(',');
-  });
-
-  // Summary baris
-  const totalHadir = state.records.filter(r => r.status === 'hadir').length;
-  const totalLibur = state.records.filter(r => r.status === 'libur').length;
-  const totalBermalam = state.records.filter(r => r.status === 'bermalam').length;
-
-  const csvContent = [
+  const csv=[
     `"REKAP ABSENSI PRIBADI"`,
-    `"Diekspor pada: ${new Date().toLocaleString('id-ID')}"`,
+    `"Diekspor: ${new Date().toLocaleString('id-ID')}"`,
     `""`,
-    header.map(h => `"${h}"`).join(','),
+    `"Tanggal","Hari","Jam Datang","Jam Pulang","Durasi","Status","Keterangan"`,
     ...rows,
     `""`,
-    `"RINGKASAN"`,
-    `"Total Hadir","${totalHadir} hari"`,
-    `"Total Libur","${totalLibur} hari"`,
-    `"Total Bermalam","${totalBermalam} hari"`,
-    `"Total Tercatat","${state.records.length} hari"`,
+    `"Total Hadir","${th} hari"`,
+    `"Total Libur","${tl} hari"`,
+    `"Total Bermalam","${tb} hari"`,
+    `"Total","${s.records.length} hari"`,
   ].join('\n');
 
-  // Download
-  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const fileName = `absensi_${new Date().toLocaleDateString('id-ID').replace(/\//g,'-')}.csv`;
-  a.href = url;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  showToast(`📥 Tersimpan: ${fileName}`, 'success');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`absensi_${new Date().toLocaleDateString('id-ID').replace(/\//g,'-')}.csv`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  toast('File CSV tersimpan ↓');
 }
 
-// =====================
-// INIT
-// =====================
-
-function init() {
-  // Cek permission notif
-  if ('Notification' in window && Notification.permission === 'granted') {
-    notifGranted = true;
-    updateNotifBtn();
-    startScheduler();
-  }
-
-  renderStatus();
-  renderHistory();
+// ── TOAST ──
+let tTmr;
+function toast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(tTmr); tTmr=setTimeout(()=>el.classList.remove('show'),2800);
 }
 
-init();
+// ── INIT ──
+if ('Notification' in window && Notification.permission==='granted') {
+  notifOn=true; updNotif(); startSched();
+}
+render();
 </script>
 </body>
 </html>
